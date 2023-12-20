@@ -1,2 +1,7 @@
 # Sphinx
 docs/build
+*.so
+*.a
+Makefile.csplugins
+caQtDM_Binaries
+
