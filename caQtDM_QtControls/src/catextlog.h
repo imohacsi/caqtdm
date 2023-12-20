@@ -28,6 +28,7 @@
 
 #include <QPlainTextEdit>
 #include <qtcontrols_global.h>
+#include <vector>
 
 class QTCON_EXPORT caTextLog : public QPlainTextEdit {
     Q_OBJECT
@@ -143,6 +144,7 @@ protected:
 private:
     QString thisPV;
     QString keepText;
+    std::vector<QString> _StringBuffer;
 
     QColor thisForeColor, oldForeColor;
     QColor thisBackColor, oldBackColor;

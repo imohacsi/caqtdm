@@ -44,7 +44,7 @@ caTextLog::caTextLog(QWidget *parent) : QPlainTextEdit(parent) {
     // to start with, clear the stylesheet, so that playing around is not possible.
     setStyleSheet("");
 
-    // we want this font, while nice and monospace
+    // Set font (to a monospace type) 
     QFont font("Lucida Sans Typewriter");
     // if this font does not exist then try a next one
     QFontInfo info(font);
@@ -113,7 +113,7 @@ void caTextLog::setPV(QString const &newPV)
 // while this gives a perfomance problem, limit the use of it by testing changes
 void caTextLog::setColors(QColor bg, QColor fg, QColor frame, int lineWidth)
 {
-    if(!defBackColor.isValid() || !defForeColor.isValid()) return;
+    if(!defBackColor.isValid() || !defForeColor.isValid()){ return; }
 
     if((bg != oldBackColor) || (fg != oldForeColor) || (thisColorMode != oldColorMode) || (frame != oldFrameColor) || lineWidth != oldFrameLineWidth) {
 
@@ -262,13 +262,22 @@ void caTextLog::setTextLine(const QString &txt){
     const time_t cTime = time(NULL);
     struct tm *timeinfo = localtime(&cTime);
     char ss[40];
-    sprintf(ss, "\n[%02d:%02d:%02d] ", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+    sprintf(ss, "[%02d:%02d:%02d] ", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
 
+    _StringBuffer.push_back(ss + txt + "\n");
+    // Max 20 lines
+    if(_StringBuffer.size()>=20){ 
+        if(!_StringBuffer.empty()) { 
+            _StringBuffer.erase(_StringBuffer.begin());
+        }  
+    }
 
-    keepText = keepText + ss + txt;
+    QString tmpText = "";
+    for(size_t ii=0; ii<_StringBuffer.size(); ii++){ tmpText = tmpText + _StringBuffer[ii]; }
+
+    keepText = tmpText;
     QPlainTextEdit::setPlainText(keepText);
     verticalScrollBar()->setSliderPosition(verticalScrollBar()->maximum());
-
 }
 
 
@@ -285,15 +294,15 @@ QSize caTextLog::calculateTextSpace(){
 
 // will now be used only for catextentry (performance)
 void caTextLog::rescaleFont(){
-    // Constant 40 character width rescaling
+    // Constant 60 character width rescaling
     QFont f = QPlainTextEdit::font();
-    f.setPointSizeF(QPlainTextEdit::width()/40);
+    f.setPointSizeF(QPlainTextEdit::width()/60);
     QPlainTextEdit::setFont(f);
 }
 
 QSize caTextLog::sizeHint() const {    
     QFont f = font();
-    int fs = std::max(QPlainTextEdit::width()/40, 10);
+    int fs = std::max(QPlainTextEdit::width()/60, 10);
     f.setPointSize(fs);
     QFontMetrics fm(f);
     int w = fm.width(text());
