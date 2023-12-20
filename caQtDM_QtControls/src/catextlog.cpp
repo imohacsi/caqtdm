@@ -267,9 +267,7 @@ void caTextLog::setTextLine(const QString &txt){
     _StringBuffer.push_back(ss + txt + "\n");
     // Max 20 lines
     if(_StringBuffer.size()>=20){ 
-        if(!_StringBuffer.empty()) { 
-            _StringBuffer.erase(_StringBuffer.begin());
-        }  
+        _StringBuffer.erase(_StringBuffer.begin());
     }
 
     QString tmpText = "";
